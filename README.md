@@ -34,3 +34,5 @@ AI-powered expense auditing and savings recommendation platform.
 - Next.js
 - TypeScript
 - Tailwind CSS
+## Live Demo
+https://spendpilot-project.vercel.app
