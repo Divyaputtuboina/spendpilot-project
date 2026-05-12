@@ -37,44 +37,67 @@ export default function ResultsPage() {
 
   const spend = Number(monthlySpend);
 
-  let optimizationRate = 0.15;
+  // Smart Optimization Logic
+  let optimizationRate = 0.12;
 
   switch (tool) {
+
     case "ChatGPT":
-      optimizationRate = 0.25;
+      optimizationRate = plan === "Enterprise" ? 0.30 : 0.22;
       break;
+
     case "Claude":
-      optimizationRate = 0.22;
+      optimizationRate = plan === "Business" ? 0.26 : 0.20;
       break;
+
     case "Cursor":
       optimizationRate = 0.35;
       break;
+
     case "Gemini":
       optimizationRate = 0.18;
       break;
+
     case "GitHub Copilot":
-      optimizationRate = 0.30;
+      optimizationRate = Number(teamSize) > 20 ? 0.32 : 0.24;
       break;
+
     case "OpenAI API":
-      optimizationRate = 0.40;
+      optimizationRate = spend > 50000 ? 0.42 : 0.30;
       break;
+
     case "Anthropic API":
-      optimizationRate = 0.32;
-      break;
-    case "Windsurf":
       optimizationRate = 0.28;
       break;
+
+    case "Windsurf":
+      optimizationRate = 0.25;
+      break;
+
+    default:
+      optimizationRate = 0.15;
   }
 
-  const monthlySavings = spend * optimizationRate;
+  const monthlySavings = Math.round(spend * optimizationRate);
+
   const yearlySavings = monthlySavings * 12;
+
   const optimizedSpend = spend - monthlySavings;
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
 
   return (
     <main className="min-h-screen px-6 py-16 text-white">
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl w-full mx-auto">
 
+        {/* Back Button */}
         <button
           onClick={() => router.push("/audit")}
           className="mb-8 border border-white/20 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
@@ -82,78 +105,95 @@ export default function ResultsPage() {
           ← Back to Audit
         </button>
 
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 shadow-2xl">
+        {/* Header */}
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-10 shadow-2xl">
 
-          <h1 className="text-5xl font-bold text-center">
+          <h1 className="text-3xl md:text-5xl font-bold text-center">
             AI Spend Audit Report
           </h1>
 
-          <p className="text-center text-gray-400 mt-5 text-lg">
+          <p className="text-center text-gray-400 mt-5 text-base md:text-lg">
             Personalized optimization insights for your AI stack.
           </p>
 
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-10">
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
             <h2 className="text-gray-400 text-sm">
               Monthly Savings
             </h2>
 
-            <p className="text-4xl font-bold mt-3 text-green-400">
-              ${monthlySavings.toFixed(0)}
+            <p className="text-3xl md:text-4xl font-bold mt-3 text-green-400 break-words">
+              {formatCurrency(monthlySavings)}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
             <h2 className="text-gray-400 text-sm">
               Optimized Spend
             </h2>
 
-            <p className="text-4xl font-bold mt-3 text-blue-400">
-              ${optimizedSpend.toFixed(0)}
+            <p className="text-3xl md:text-4xl font-bold mt-3 text-blue-400 break-words">
+              {formatCurrency(optimizedSpend)}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
             <h2 className="text-gray-400 text-sm">
               Yearly Savings
             </h2>
 
-            <p className="text-4xl font-bold mt-3 text-purple-400">
-              ${yearlySavings.toFixed(0)}
+            <p className="text-3xl md:text-4xl font-bold mt-3 text-purple-400 break-words">
+              {formatCurrency(yearlySavings)}
             </p>
           </div>
 
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-10 mt-10">
+        {/* Summary */}
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-10 mt-10">
 
-          <h2 className="text-3xl font-semibold mb-6">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-6">
             Audit Summary
           </h2>
 
-          <p className="text-gray-300 leading-8 text-lg">
-            Your team of
-            <span className="text-white font-semibold"> {teamSize} </span>
-            members currently uses
-            <span className="text-purple-400 font-semibold"> {tool} </span>
-            on the
-            <span className="text-blue-400 font-semibold"> {plan} </span>
-            plan with a monthly spend of
-            <span className="text-green-400 font-semibold"> ${spend}</span>.
+          <p className="text-gray-300 leading-8 text-base md:text-lg">
 
-            SpendPilot identified
-            <span className="text-green-400 font-semibold">
-              {" "} ${monthlySavings.toFixed(0)}
+            Your team of
+            <span className="text-white font-semibold">
+              {" "} {teamSize} {" "}
             </span>
-            in potential monthly optimization savings.
+
+            members currently uses
+            <span className="text-purple-400 font-semibold">
+              {" "} {tool} {" "}
+            </span>
+
+            on the
+            <span className="text-blue-400 font-semibold">
+              {" "} {plan} {" "}
+            </span>
+
+            plan with a monthly spend of
+            <span className="text-green-400 font-semibold">
+              {" "} {formatCurrency(spend)}
+            </span>.
+
+            SpendPilot identified potential monthly optimization savings of
+
+            <span className="text-green-400 font-semibold">
+              {" "} {formatCurrency(monthlySavings)}
+            </span>.
+
           </p>
 
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-10 mt-10">
+        {/* Email Section */}
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-10 mt-10">
 
           <h2 className="text-2xl font-semibold mb-5">
             Save Audit Report
@@ -171,18 +211,20 @@ export default function ResultsPage() {
             onClick={() => {
               alert("Audit report saved successfully!");
             }}
-            className="w-full mt-5 py-4 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-500 font-semibold text-lg"
+            className="w-full mt-5 py-4 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-500 font-semibold text-base md:text-lg hover:scale-[1.02] transition"
           >
             Save Report
           </button>
 
         </div>
 
+        {/* Footer */}
         <footer className="mt-16 text-center text-gray-500 text-sm">
           Built with Next.js • SpendPilot AI Audit Platform
         </footer>
 
       </div>
+
     </main>
   );
 }

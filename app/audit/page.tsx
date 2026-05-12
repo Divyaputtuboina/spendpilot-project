@@ -103,7 +103,7 @@ export default function AuditPage() {
 
             <div>
               <label className="block mb-2 text-sm text-gray-300">
-                Monthly Spend ($)
+                Monthly Spend (₹)
               </label>
 
               <input
